@@ -17,7 +17,7 @@ BhashaSetu AI is an offline-first AI educational platform designed specifically 
 Create a `.env` file in both the project root and `backend/` directory (refer to `.env.example`):
 
 ```env
-GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE
+GEMINI_API_KEY
 GEMINI_MODEL=gemini-3.6-flash
 PORT=5000
 API_BASE_URL=http://localhost:5000
