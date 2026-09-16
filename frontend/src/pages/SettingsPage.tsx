@@ -1,150 +1,121 @@
-import React, { useState } from 'react';
-import { Settings as SettingsIcon, ShieldCheck, Key, RefreshCw, Check, Database, Sparkles } from 'lucide-react';
-import { AppSettings } from '../types';
-import { apiClient } from '../services/api';
+import React from 'react';
+import { Settings, Moon, Sun, Type, Zap, RefreshCw, Trash2, Database, Shield, Globe } from 'lucide-react';
+import { useApp } from '../context/AppContext';
+import { Language } from '../types';
 
-interface SettingsPageProps {
-  settings: AppSettings;
-  onSettingsUpdated: (settings: AppSettings) => void;
-}
-
-export const SettingsPage: React.FC<SettingsPageProps> = ({ settings, onSettingsUpdated }) => {
-  const [formData, setFormData] = useState<AppSettings>({ ...settings });
-  const [savedSuccess, setSavedSuccess] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const updated = await apiClient.updateSettings(formData);
-      onSettingsUpdated(updated);
-      setSavedSuccess(true);
-      setTimeout(() => setSavedSuccess(false), 3000);
-    } catch (err) {
-      console.error('Failed to update settings:', err);
-    }
-  };
+export const SettingsPage: React.FC = () => {
+  const {
+    activeLanguage,
+    setActiveLanguage,
+    accessibility,
+    updateAccessibility,
+    addNotification,
+  } = useApp();
 
   return (
-    <div className="space-y-6 pb-12 animate-fadeIn max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
-        <div>
-          <div className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold mb-2">
-            <SettingsIcon className="w-3.5 h-3.5" />
-            <span>Platform Configuration</span>
-          </div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900">FairBuy System Settings</h1>
-          <p className="text-xs text-slate-500">Configure data sources, demo mode, currency, and AI scoring parameters</p>
-        </div>
-
-        {formData.demoMode && (
-          <span className="text-xs font-bold text-amber-700 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200 flex items-center gap-1.5">
-            <Database className="w-4 h-4 text-amber-600" />
-            <span>Demo Data Active</span>
-          </span>
-        )}
+    <div className="space-y-6 pb-16">
+      {/* HEADER */}
+      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-soft">
+        <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+          <Settings className="w-5 h-5 text-slate-700" /> Platform & Accessibility Settings
+        </h2>
+        <p className="text-xs text-slate-500 mt-1">
+          Configure vernacular defaults, accessibility modes, low-end device optimization, and offline storage
+        </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-6">
-        {/* 1. DEMO MODE TOGGLE */}
-        <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80 flex items-center justify-between gap-4">
-          <div>
-            <span className="font-bold text-slate-900 text-sm block">Hackathon / Presentation Demo Mode</span>
-            <p className="text-xs text-slate-600">
-              When enabled, uses clearly labeled sample market data fallback when external live price feeds are unavailable.
-            </p>
-          </div>
+      {/* SETTINGS SECTIONS */}
+      <div className="space-y-6">
+        {/* Section 1: Vernacular Language Defaults */}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-soft space-y-4">
+          <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2 border-b pb-3">
+            <Globe className="w-4 h-4 text-sal-700" /> Default Vernacular Language
+          </h3>
 
-          <label className="relative inline-flex items-center cursor-pointer shrink-0">
-            <input
-              type="checkbox"
-              checked={formData.demoMode}
-              onChange={(e) => setFormData({ ...formData, demoMode: e.target.checked })}
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-          </label>
-        </div>
-
-        {/* 2. REGIONAL PREFERENCES */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-bold text-slate-900">Regional & Currency Preferences</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-            <div>
-              <label className="block font-semibold text-slate-700 mb-1">Currency Symbol</label>
-              <input
-                type="text"
-                value={formData.currency}
-                onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none font-bold"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-slate-700 mb-1">Default City</label>
-              <input
-                type="text"
-                value={formData.defaultCity}
-                onChange={(e) => setFormData({ ...formData, defaultCity: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-slate-700 mb-1">Default State</label>
-              <input
-                type="text"
-                value={formData.defaultState}
-                onChange={(e) => setFormData({ ...formData, defaultState: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              />
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {(['santhali', 'ho', 'mundari'] as Language[]).map((lang) => (
+              <button
+                key={lang}
+                onClick={() => setActiveLanguage(lang)}
+                className={`p-4 rounded-2xl border text-left font-bold capitalize transition-all ${
+                  activeLanguage === lang
+                    ? 'bg-sal-700 text-white border-sal-800 shadow-sm'
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-sal-600'
+                }`}
+              >
+                <div className="text-sm font-extrabold">{lang}</div>
+                <span className="text-[10px] opacity-80 font-normal">
+                  {lang === 'santhali' ? 'Ol Chiki (ᱚᱞ ᱪᱤᱠᱤ)' : lang === 'ho' ? 'Warang Citi' : 'Mundari Bani'}
+                </span>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* 3. SCORING & DATA CACHE SETTINGS */}
-        <div className="space-y-4 pt-4 border-t border-slate-100">
-          <h3 className="text-sm font-bold text-slate-900">Engine Tuning & Cache Duration</h3>
+        {/* Section 2: Display & Accessibility */}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-soft space-y-4">
+          <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2 border-b pb-3">
+            <Sun className="w-4 h-4 text-amber-600" /> Display & Accessibility Modes
+          </h3>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-            <div>
-              <label className="block font-semibold text-slate-700 mb-1">Data Cache Freshness (Minutes)</label>
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <div className="font-bold text-slate-900">High Contrast Mode</div>
+                <span className="text-[10px] text-slate-500">Black background with high contrast borders</span>
+              </div>
               <input
-                type="number"
-                value={formData.cacheFreshnessMinutes}
-                onChange={(e) => setFormData({ ...formData, cacheFreshnessMinutes: Number(e.target.value) })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                type="checkbox"
+                checked={accessibility.highContrast}
+                onChange={(e) => updateAccessibility('highContrast', e.target.checked)}
+                className="w-5 h-5 accent-sal-700"
               />
             </div>
 
-            <div>
-              <label className="block font-semibold text-slate-700 mb-1">Fair Price Threshold (+ % Overpriced Warning)</label>
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <div className="font-bold text-slate-900">Large Text Mode</div>
+                <span className="text-[10px] text-slate-500">1.25x font size multiplier for low vision</span>
+              </div>
               <input
-                type="number"
-                value={formData.fairPriceThresholdPercent}
-                onChange={(e) => setFormData({ ...formData, fairPriceThresholdPercent: Number(e.target.value) })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                type="checkbox"
+                checked={accessibility.largeText}
+                onChange={(e) => updateAccessibility('largeText', e.target.checked)}
+                className="w-5 h-5 accent-sal-700"
               />
+            </div>
+
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <div className="font-bold text-slate-900">Lite Mode (Low-End Android Optimization)</div>
+                <span className="text-[10px] text-slate-500">Disables animations for 2 GB RAM devices</span>
+              </div>
+              <input
+                type="checkbox"
+                checked={accessibility.liteMode}
+                onChange={(e) => updateAccessibility('liteMode', e.target.checked)}
+                className="w-5 h-5 accent-sal-700"
+              />
+            </div>
+
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <div className="font-bold text-slate-900">Speech Playback Speed</div>
+                <span className="text-[10px] text-slate-500">Default rate: {accessibility.speechSpeed}x</span>
+              </div>
+              <select
+                value={accessibility.speechSpeed}
+                onChange={(e) => updateAccessibility('speechSpeed', parseFloat(e.target.value))}
+                className="text-xs font-bold bg-white border border-slate-300 rounded-lg px-2.5 py-1"
+              >
+                <option value={0.5}>0.5x (Slow Speech)</option>
+                <option value={0.75}>0.75x</option>
+                <option value={1.0}>1.0x (Normal)</option>
+              </select>
             </div>
           </div>
         </div>
-
-        {/* Save button */}
-        <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow-xs transition-colors"
-          >
-            Save Settings
-          </button>
-
-          {savedSuccess && (
-            <span className="text-xs text-emerald-600 font-bold flex items-center gap-1 animate-fadeIn">
-              <Check className="w-4 h-4" />
-              Settings saved successfully!
-            </span>
-          )}
-        </div>
-      </form>
+      </div>
     </div>
   );
 };

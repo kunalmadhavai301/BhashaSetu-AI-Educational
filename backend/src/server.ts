@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
-import apiRouter from './routes/api';
+import aiRoutes from './routes/aiRoutes';
 
 dotenv.config();
 
@@ -13,16 +13,17 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// API Router
-app.use('/api', apiRouter);
+// BhashaSetu AI Routes
+app.use('/api/ai', aiRoutes);
 
-// Health check endpoint
+// General Backend Health Check
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
-    service: 'FairBuy AI Backend Engine',
+    service: 'BhashaSetu AI Vernacular Classroom Engine',
     timestamp: new Date().toISOString(),
-    version: '1.0.0',
+    version: '2.0.0',
+    geminiModelConfigured: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
   });
 });
 
@@ -33,7 +34,7 @@ app.get('*', (req, res) => {
   if (!req.path.startsWith('/api')) {
     res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
       if (err) {
-        res.status(200).send('FairBuy AI API Service Running.');
+        res.status(200).send('BhashaSetu AI Service Running.');
       }
     });
   }
@@ -41,10 +42,10 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`====================================================`);
-  console.log(`🚀 FAIRBUY AI BACKEND RUNNING ON http://localhost:${PORT}`);
-  console.log(`   Tagline: "Know. Compare. Buy Smart."`);
+  console.log(`🚀 BHASHASETU AI BACKEND RUNNING ON http://localhost:${PORT}`);
+  console.log(`   Model Configured: ${process.env.GEMINI_MODEL || 'gemini-3.6-flash'}`);
+  console.log(`   Tagline: "One Teacher. Many Languages. Every Child Included."`);
   console.log(`====================================================`);
 });
 
 export default app;
-

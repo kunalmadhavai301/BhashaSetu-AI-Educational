@@ -1,142 +1,95 @@
-# FairBuy AI - Smart Shopping & Price Intelligence Platform
+# BhashaSetu AI — Vernacular Pedagogy & Inclusive Education Platform
 
-> **"Know. Compare. Buy Smart."**
+> **“One Teacher. Many Languages. Every Child Included.”**
 
-FairBuy AI is an AI-powered smart shopping and price intelligence platform built to help customers determine whether a product offered by a local seller is actually worth buying at the quoted price.
-
-The platform identifies products (via image scanning, camera, barcode SKU, or text search), understands the user's location, collects live and observed market price signals across online and local retail channels, analyzes public review sentiment, calculates an estimated fair price range (using median and interquartile statistical bounds), and delivers a clear **BUY / CONSIDER / AVOID** recommendation.
+BhashaSetu AI is an offline-first AI educational platform designed specifically for primary school teachers in tribal regions of Jharkhand (starting with Santhali, expandable to Ho and Mundari). It allows Hindi-medium teachers who do not speak tribal languages to teach children seamlessly in their mother tongue, with deep NIPUN Bharat alignment, EveryChild accessibility features, real-time voice translation, offline language packs, and Gemini AI lesson generation.
 
 ---
 
-## Key Features
+## 🚀 Quick Start Guide
 
-- **Price Intelligence Engine**: Normalizes price signals, filters outliers, and calculates statistical median, lower/upper fair bounds ($Q_1 - 0.25 \times IQR$ to $Q_3 + 0.25 \times IQR$), and data freshness timestamps.
-- **Buying Decision Engine**: Multi-factor decision matrix outputting a score (0–100), transparent component ratings (Price, Quality, Reviews, Value, Availability), and status badges (`BUY`, `CONSIDER`, `AVOID`).
-- **Visual Price Fairness Spectrum**: Clear interactive graph marking quoted seller price vs estimated fair market range.
-- **Public Review & Value Analysis**: Aspect sentiment extraction (durability, battery, performance, packaging, connectivity), pros/cons summary, and overall value rating.
-- **Location Context Engine**: Device Geolocation API with explicit permission prompt, reverse geocoding to City, State, Country (defaulting to Nashik, Maharashtra, India), and manual location picker.
-- **Ask FairBuy AI Assistant**: Floating AI shopping assistant answering product questions ("Why is this expensive?", "Is there a cheaper alternative?", "Is this good for travel?").
-- **Alternative Recommendations & Requirement Matcher**: Side-by-side spec comparison table and "Tell FairBuy what you need" natural language requirements matcher.
-- **Demo Mode**: Built-in realistic sample market observations for hackathon demonstrations or offline environments.
-
----
-
-## Project Structure
-
-```
-Survey Snap AI /
-├── backend/
-│   ├── src/
-│   │   ├── db/              # Sample dataset & settings persistence
-│   │   ├── routes/          # Express REST API endpoints
-│   │   ├── services/        # Product, Price, Review, Decision, Location & Chat services
-│   │   ├── types/           # Domain TypeScript definitions
-│   │   └── server.ts        # Express server startup
-│   ├── package.json
-│   └── tsconfig.json
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/      # Sidebar, TopHeader, MobileNav, PriceFairnessGraph, WhyThisPriceModal, AskFairBuyDrawer
-│   │   ├── pages/           # Dashboard, Analyze, ProductAnalysis, PriceIntelligence, Reviews, BuyDecision, Alternatives, History, Settings
-│   │   ├── services/        # API client & HTTP handlers
-│   │   ├── types/           # Domain TypeScript types
-│   │   ├── App.tsx          # Main application shell & router
-│   │   └── main.tsx
-│   ├── package.json
-│   ├── vite.config.ts
-│   └── tailwind.config.js
-│
-└── README.md
-```
-
----
-
-## Getting Started & Installation
-
-### Prerequisites
+### 1. Prerequisites
 - **Node.js**: v18.0.0 or higher
 - **npm**: v9.0.0 or higher
+- **Google Gemini API Key**: Configured in environment variables
 
-### 1. Install Backend Dependencies
-```bash
-cd backend
-npm install
-```
-
-### 2. Install Frontend Dependencies
-```bash
-cd frontend
-npm install
-```
-
----
-
-## Running the Application
-
-### Option A: Run Backend Server
-```bash
-cd backend
-npm run dev
-```
-Backend API will start at: `http://localhost:5000`
-
-### Option B: Run Frontend Development Server
-```bash
-cd frontend
-npm run dev
-```
-Frontend Web UI will start at: `http://localhost:3000`
-
----
-
-## API Endpoints
-
-- `POST /api/products/identify` - Identifies product from image, barcode, or query.
-- `POST /api/products/analyze` - Runs full price intelligence, review sentiment, fair price calculation, and buying decision engine.
-- `GET /api/products/:id` - Fetches single product analysis details.
-- `GET /api/products/:id/prices` - Retrieves price observations and market signals.
-- `GET /api/products/:id/reviews` - Returns review sentiment and aspect scores.
-- `POST /api/fair-price/calculate` - Recalculates statistical fair price bounds.
-- `POST /api/buy-decision` - Computes buying recommendation score & component metrics.
-- `POST /api/recommendations` - Matches natural language user requirements against product catalog.
-- `POST /api/location/reverse-geocode` - Geocodes lat/lng coordinates or saves manual city selection.
-- `GET /api/history` - Fetches audit trail of past checks.
-- `POST /api/chat` - Answers product questions using the active analysis context.
-- `GET /api/settings` & `PUT /api/settings` - Reads & updates platform settings.
-
----
-
-## Environment & Configuration
-
-Create a `.env` file in `backend/` for live production keys:
+### 2. Environment Configuration
+Create a `.env` file in both the project root and `backend/` directory (refer to `.env.example`):
 
 ```env
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE
+GEMINI_MODEL=gemini-3.6-flash
 PORT=5000
-NODE_ENV=production
-GEMINI_API_KEY=your_gemini_api_key_here
-DEFAULT_CITY=Nashik
-DEFAULT_STATE=Maharashtra
+API_BASE_URL=http://localhost:5000
+OFFLINE_MODE=false
+```
+
+> [!IMPORTANT]
+> **Security Requirement**: Never commit `.env` or hard-code API keys in frontend code. The key is securely loaded on the Express server side.
+
+### 3. Install & Run
+
+#### Backend Server (Port 5000)
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+#### Frontend Application (Port 3000)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000/](http://localhost:3000/) in your web browser.
+
+---
+
+## 🌟 Key Architecture & Capabilities
+
+### 🟢 Online AI Mode vs 🔵 Offline Mode
+- **🟢 ONLINE AI Mode**: Calls the backend Node.js Express server to invoke Google Gemini (`gemini-3.6-flash`) for real-time translation, Universal 14-in-1 lesson generation, A4 printable worksheets, flashcards, local Jharkhand stories, quizzes, and visual descriptions.
+- **🔵 OFFLINE Mode**: Operates 100% locally from browser **IndexedDB** (`BhashaSetuDB`) and pre-bundled language packs (Santhali Ol Chiki ᱚᱞ ᱪᱤᱠᱤ glossaries, audio phonemes, local lesson templates) with zero internet dependency.
+- **Auto Network Detection**: Automatically switches to Offline Mode when internet connectivity disappears and notifies the teacher without interrupting class.
+
+### ♿ EveryChild Inclusive Accessibility Engine
+- **"Speak Without Speaking" PECS Board**: 12 core picture cards with immediate TTS speech output for non-verbal children.
+- **Silent Classroom Mode**: Visual speech wave indicators, gesture instructional cards, visual alerts, and full captioning for deaf/hard-of-hearing children.
+- **AI Visual Description & Image-to-Lesson**: Generates child-friendly audio and bilingual descriptions for visually impaired children.
+- **Lite Mode**: Disables animations for low-end 2 GB RAM Android tablets.
+
+### 🎯 NIPUN Bharat FLN Alignment
+- Maps generated lessons, activities, and worksheets to Foundational Literacy and Numeracy (FLN) learning outcomes.
+
+---
+
+## 🧪 Testing & AI Diagnostics
+
+Navigate to the **AI Diagnostics** page in the sidebar or test the health endpoint directly:
+
+```bash
+curl http://localhost:5000/api/ai/health
+```
+
+**Response**:
+```json
+{
+  "connected": true,
+  "model": "gemini-3.6-flash",
+  "latencyMs": 340,
+  "message": "✓ AI model connected and working correctly."
+}
 ```
 
 ---
 
-## Production Deployment
+## 📱 Building for Android & PWA
+BhashaSetu AI is packaged as an offline-first PWA. To build for production or wrap with Capacitor/TWA for Android:
 
-1. Build backend TypeScript:
-   ```bash
-   cd backend
-   npm run build
-   ```
-2. Build frontend React static assets:
-   ```bash
-   cd frontend
-   npm run build
-   ```
-3. Start production server:
-   ```bash
-   cd backend
-   npm start
-   ```
-
-The Express backend automatically serves the compiled frontend static bundle from `frontend/dist` on port 5000.
+```bash
+cd frontend
+npm run build
+```
+The production bundle will be generated in `frontend/dist`.

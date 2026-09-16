@@ -1,38 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Ol+Chiki:wght@400;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 antialiased font-sans selection:bg-blue-100 selection:text-blue-900;
+    @apply bg-ivory-50 text-slate-900 font-sans antialiased selection:bg-sal-200 selection:text-sal-900 transition-colors duration-200;
   }
 }
 
-/* Custom scrollbar */
+/* Large Text Mode */
+body.large-text-mode {
+  font-size: 1.18rem;
+}
+
+body.large-text-mode button,
+body.large-text-mode input,
+body.large-text-mode p,
+body.large-text-mode span {
+  font-size: 1.1em;
+}
+
+/* High Contrast Mode */
+body.high-contrast {
+  @apply bg-black text-white;
+}
+
+body.high-contrast div,
+body.high-contrast section,
+body.high-contrast card {
+  border-color: #ffffff !important;
+}
+
+body.high-contrast button {
+  @apply border-2 border-white bg-black text-white hover:bg-white hover:text-black;
+}
+
+body.high-contrast .bg-white {
+  @apply bg-black text-white border-2 border-white;
+}
+
+body.high-contrast .text-slate-600,
+body.high-contrast .text-slate-500,
+body.high-contrast .text-slate-700 {
+  @apply text-slate-200;
+}
+
+/* Lite Mode (Low-End Android Device Optimization) */
+body.lite-mode * {
+  animation: none !important;
+  transition: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Print CSS for Printable A4 Worksheets */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .a4-page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 15mm;
+    margin: 0 auto;
+    background: white !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-after: always;
+  }
+}
+
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: rgba(0, 0, 0, 0.03);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
+  background: rgba(42, 94, 56, 0.3);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-/* Pulse animation for AI actions */
-@keyframes aiPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.85; transform: scale(1.02); }
-}
-
-.ai-pulse {
-  animation: aiPulse 2s infinite ease-in-out;
+  background: rgba(42, 94, 56, 0.6);
 }
